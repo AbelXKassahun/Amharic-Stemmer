@@ -1,0 +1,21 @@
+# Binaries for programs and plugins
+*.exe
+
+
+# Output of `go build` and `go test`
+/bin/
+/build/
+/dist/
+*.out
+
+# Temporary files
+*.log
+*.tmp
+
+# IDE/editor settings
+.vscode/
+
+# Go test and coverage files
+*.test
+*.cover
+
