@@ -27,7 +27,7 @@ func main() {
 			panic("invalid input") 
 		}
 		word = normedInput
-	} 
+	}
 	// else if fileName != "" {
 	// 	val, ok := utils.InputCheck(word, true)
 	// 	if ok != nil {
