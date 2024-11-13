@@ -1,15 +1,19 @@
 package stemmer
 
 import (
-	"fmt"
+	// "fmt"
 	// "strings"
+	// utils "github.com/AbelXKassahun/Amharic-Stemmer/utils"
 )
 
-func Stem(record [][]string, word string) string {
-	eng := ToEng(record, word)
-	fmt.Println(eng)
-	amh := ToAmh(record, eng)
-	fmt.Println(amh)
+func Stem(word string) string {
+	englishConverted := ToEng(word)
+
+
+	suffixLessWord := RemoveSuffix(englishConverted)
+	// fmt.Println(eng)
+	amh := ToAmh(suffixLessWord)
+	// fmt.Println(amh)
 	return amh
 }
 

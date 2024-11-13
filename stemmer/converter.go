@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 	// "sync"
+	utils "github.com/AbelXKassahun/Amharic-Stemmer/utils"
 )
 
-func ToAmh(record [][]string, word []string) string {
+func ToAmh(word []string) string {
 	var amhWord string
 
 	for _, val := range word {
-		if result, ok := SingleCharEngToAmh(record, val); ok != nil {
+		if result, ok := SingleCharEngToAmh(val); ok != nil {
 			fmt.Printf("\n")
 			panic(ok)
 		} else {
@@ -21,12 +22,12 @@ func ToAmh(record [][]string, word []string) string {
 	return amhWord
 }
 
-func ToEng(record [][]string, word string) []string {
+func ToEng(word string) []string {
 	var engWord []string
 	letters := strings.Split(word, "")
 
 	for _, val := range letters {
-		if result, ok := SingleCharAmhToEng(record, val); ok != nil {
+		if result, ok := SingleCharAmhToEng(val); ok != nil {
 			fmt.Printf("\n")
 			panic(ok)
 		} else {
@@ -34,14 +35,14 @@ func ToEng(record [][]string, word string) []string {
 			fmt.Println(result)
 		}
 	}
-
+	
 	return engWord
 }
 
-func SingleCharAmhToEng(record [][]string, letter string) (string, error) {
+func SingleCharAmhToEng(letter string) (string, error) {
 	var result string
 	found := false
-	for _, val := range record {
+	for _, val := range *utils.ReturnLetters() {
 		for _, val2 := range val {
 			words := strings.Split(strings.TrimLeft(val2, " "), " ")
 			if words[0] == letter {
@@ -59,9 +60,9 @@ func SingleCharAmhToEng(record [][]string, letter string) (string, error) {
 	}
 }
 
-func SingleCharEngToAmh(record [][]string, letter string) (string, error) {
+func SingleCharEngToAmh(letter string) (string, error) {
 	var result string
-	for _, val := range record {
+	for _, val := range *utils.ReturnLetters() {
 		for _, val2 := range val {
 			// var words = make([]string, 3)
 			words := strings.Split(strings.TrimLeft(val2, " "), " ")
