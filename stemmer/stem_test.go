@@ -1,9 +1,11 @@
 package stemmer
 
 import (
-	"fmt"
+	// "fmt"
 	"reflect"
 	"testing"
+
+	// "golang.org/x/tools/go/expect"
 )
 
 func TestConvHouse(t *testing.T) {
@@ -109,11 +111,29 @@ func TestRemoveLongSuffix(t *testing.T){
 
 	for _, tc := range testCases {
 		result := removeLongSuffix(tc.bareSuffix, tc.word, tc.rules)
-		fmt.Printf("%v, %v", result, tc.expected)
+		// fmt.Printf("%v, %v", result, tc.expected)
 		if reflect.DeepEqual(result, tc.expected){
 			t.Logf("PASS - removeLongSuffix(%v, %v ,%v) = %v; expected %v", tc.bareSuffix, tc.word, tc.rules, result, tc.expected)
 		} else {
 			t.Errorf("FAIL - removeLongSuffix(%v, %v ,%v) = %v; expected %v", tc.bareSuffix, tc.word, tc.rules, result, tc.expected)
+		}
+	}
+}
+
+func TestStem(t *testing.T) {
+	testCases := []struct{
+		word string
+		expected string
+	}{
+		{"መፅሃፋችን", "መፅሃፍ"},
+	}
+
+	for _, tc := range testCases{
+		result := Stem(tc.word)
+		if result == tc.expected {
+			t.Logf("PASS - Stem(%v) result: %v, expected: %v", tc.word, result, tc.expected)
+		} else {
+			t.Errorf("FAIL - Stem(%v) result: %v, expected: %v", tc.word, result, tc.expected)
 		}
 	}
 }

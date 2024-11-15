@@ -9,21 +9,23 @@ import (
 
 // this works for chained suffixes
 func RemoveSuffix(word []string) []string {
+	var processedWord []string
+	processedWord = append(processedWord, word...)
 	for i, val := range *utils.ReturnSuffixList() {
 		if i != 0 {
 			bareSuffix := strings.Split(val[0], "|")
 			rules := strings.Split(strings.TrimSpace(val[1]), "|")
 			// splittedSuffix := strings.Split(strings.ReplaceAll(string(val2[0]), "|",""), "")
-			if len(bareSuffix) > 1  && len(word) >= 3 { // 1
-				removeLongSuffix(bareSuffix, word, rules)
+			if len(bareSuffix) > 1  && len(processedWord) >= 3 { // 1
+				processedWord = removeLongSuffix(bareSuffix, processedWord, rules)
 			} else {
-				if len(word) > 2 {
-					removeShortSuffix(bareSuffix, word, rules)
+				if len(processedWord) > 2 {
+					processedWord = removeShortSuffix(bareSuffix, processedWord, rules)
 				}
 			}
 		}
 	}
-	return []string{}
+	return processedWord
 }
 
 func removeLongSuffix(bareSuffix []string, word []string, rules []string) []string{
@@ -47,7 +49,7 @@ func removeLongSuffix(bareSuffix []string, word []string, rules []string) []stri
 		}
 	}
 
-	return []string{}
+	return word
 }
 
 // substring = contingous
@@ -108,7 +110,7 @@ func removeShortSuffix(bareSuffix []string, word []string, rules []string) []str
 			return word[:len(word)-1]
 		}
 	}
-	return []string{}
+	return word
 }
 
 func convertToDiffHouse(letter string, house int) string {
