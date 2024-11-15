@@ -1,11 +1,20 @@
 package utils
 
-import(
+import (
+	"bytes"
+	_ "embed"
 	"encoding/csv"
-	"path/filepath"
 	"fmt"
+	"log"
 	"os"
+	// "path/filepath"
 )
+
+//go:embed data/letters.csv
+var lettersCSV []byte
+
+//go:embed data/suffixList.csv
+var suffixesCSV []byte
 
 func ReadFromFile(){
 
@@ -16,7 +25,7 @@ func OpenFile(fileName string) ([][]string, error) {
 	file, errReading := os.Open(fileName)
 	
 	if errReading != nil {
-		errorMsg = fmt.Errorf("error opening the file <%v> \n", fileName)
+		errorMsg = fmt.Errorf("error opening the file <%v>", fileName)
 		return [][]string{}, errorMsg
 	}
 
@@ -39,21 +48,31 @@ func OpenFile(fileName string) ([][]string, error) {
 }
 
 func ReturnLetters() *[][]string {
-	absPath, _ := filepath.Abs("../data/letters.csv")
-	// record, err := OpenFile("../data/letters.csv")
-	record, err := OpenFile(absPath)
+	// absPath, _ := filepath.Abs("../data/letters.csv")
+	// record, err := OpenFile(absPath)
+	// log.Println(absPath)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	reader := csv.NewReader(bytes.NewReader(lettersCSV))
+	record, err := reader.ReadAll()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
 	return &record
 }
 
 func ReturnSuffixList() *[][]string {
-	absPath, _ := filepath.Abs("../data/suffixList.csv")
-	// suffixList, err := OpenFile("../data/suffixList.csv")
-	suffixList, err := OpenFile(absPath)
+	// absPath, _ := filepath.Abs("../data/suffixList.csv")
+	// suffixList, err := OpenFile(absPath)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	reader := csv.NewReader(bytes.NewReader(suffixesCSV))
+	suffixList, err := reader.ReadAll()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	return &suffixList
 }
