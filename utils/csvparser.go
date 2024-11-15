@@ -2,6 +2,7 @@ package utils
 
 import(
 	"encoding/csv"
+	"path/filepath"
 	"fmt"
 	"os"
 )
@@ -15,7 +16,7 @@ func OpenFile(fileName string) ([][]string, error) {
 	file, errReading := os.Open(fileName)
 	
 	if errReading != nil {
-		errorMsg = fmt.Errorf("Error opening the file <%v> \n", fileName)
+		errorMsg = fmt.Errorf("error opening the file <%v> \n", fileName)
 		return [][]string{}, errorMsg
 	}
 
@@ -24,7 +25,7 @@ func OpenFile(fileName string) ([][]string, error) {
 	record, errCSV := r.ReadAll()
 
 	if errCSV != nil {
-		errorMsg = fmt.Errorf("Error reading the CSV file: %v", fileName)
+		errorMsg = fmt.Errorf("error reading the CSV file: %v", fileName)
 		return [][]string{}, errorMsg
 	}
 
@@ -38,7 +39,9 @@ func OpenFile(fileName string) ([][]string, error) {
 }
 
 func ReturnLetters() *[][]string {
-	record, err := OpenFile("../data/letters.csv")
+	absPath, _ := filepath.Abs("../data/letters.csv")
+	// record, err := OpenFile("../data/letters.csv")
+	record, err := OpenFile(absPath)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +49,9 @@ func ReturnLetters() *[][]string {
 }
 
 func ReturnSuffixList() *[][]string {
-	suffixList, err := OpenFile("../data/suffixList.csv")
+	absPath, _ := filepath.Abs("../data/suffixList.csv")
+	// suffixList, err := OpenFile("../data/suffixList.csv")
+	suffixList, err := OpenFile(absPath)
 	if err != nil {
 		panic(err)
 	}
