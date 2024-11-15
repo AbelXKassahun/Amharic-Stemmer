@@ -11,11 +11,12 @@ func ReadFromFile(){
 }
 
 func OpenFile(fileName string) ([][]string, error) {
+	var errorMsg error
 	file, errReading := os.Open(fileName)
 	
 	if errReading != nil {
-		fmt.Printf("Error opening the file <%v> \n", fileName)
-		return [][]string{}, errReading
+		errorMsg = fmt.Errorf("Error opening the file <%v> \n", fileName)
+		return [][]string{}, errorMsg
 	}
 
 	// reading the csv file
@@ -23,8 +24,8 @@ func OpenFile(fileName string) ([][]string, error) {
 	record, errCSV := r.ReadAll()
 
 	if errCSV != nil {
-		fmt.Println("Error reading the CSV file ")
-		return [][]string{}, errCSV
+		errorMsg = fmt.Errorf("Error reading the CSV file: %v", fileName)
+		return [][]string{}, errorMsg
 	}
 
 	// closing the file
@@ -34,4 +35,20 @@ func OpenFile(fileName string) ([][]string, error) {
 	}
 
 	return record, nil
+}
+
+func ReturnLetters() *[][]string {
+	record, err := OpenFile("../data/letters.csv")
+	if err != nil {
+		panic(err)
+	}
+	return &record
+}
+
+func ReturnSuffixList() *[][]string {
+	suffixList, err := OpenFile("../data/suffixList.csv")
+	if err != nil {
+		panic(err)
+	}
+	return &suffixList
 }

@@ -1,0 +1,15 @@
+remove, rule, suffix_inAmh
+ā|če|ne, split|6, ኣችን
+ā|če|hu, split|6, ኣችሁ
+ā|ča|we, split|6, ኣቸው
+o|če, split|6, ኦች
+o|če|ne, split|6, ኦችን
+o|ču|ne, split|6, ኦቹን
+ne, no-split, ን
+u, split|6, ኡ
+é, split|6, ኤ
+he, no-split, ህ
+še, no-split, ሽ
+wā, no-split, ዋ
+we, no-split, ው
+nā, no-split, ና 

@@ -1,6 +1,7 @@
 package stemmer
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -102,12 +103,13 @@ func TestRemoveLongSuffix(t *testing.T){
 	}{
 		{[]string{"ā","če","ne"}, []string{"ma", "ṡe", "hā", "fā", "če", "ne"}, []string{"split", "6"}, []string{"ma", "ṡe", "hā", "fe"}},
 		{[]string{"ā","ča","we"}, []string{"ma", "ṡe", "hā", "fā", "ča", "we"}, []string{"split", "6"}, []string{"ma", "ṡe", "hā", "fe"}},
-		{[]string{"o","če"}, []string{"ma", "ṡe", "hā", "fo", "če"}, []string{"split", "6"}, []string{"ma", "ṡe", "ha", "fe"}},
-		{[]string{"o","ču","ne"}, []string{"ma", "ṡe", "hā", "fo", "ču", "ne"},[]string{"split", "6"}, []string{"ma", "ṡe", "ha", "fe"}},
+		{[]string{"o","če"}, []string{"ma", "ṡe", "hā", "fo", "če"}, []string{"split", "6"}, []string{"ma", "ṡe", "hā", "fe"}},
+		{[]string{"o","ču","ne"}, []string{"ma", "ṡe", "hā", "fo", "ču", "ne"},[]string{"split", "6"}, []string{"ma", "ṡe", "hā", "fe"}},
 	}
 
 	for _, tc := range testCases {
 		result := removeLongSuffix(tc.bareSuffix, tc.word, tc.rules)
+		fmt.Printf("%v, %v", result, tc.expected)
 		if reflect.DeepEqual(result, tc.expected){
 			t.Logf("PASS - removeLongSuffix(%v, %v ,%v) = %v; expected %v", tc.bareSuffix, tc.word, tc.rules, result, tc.expected)
 		} else {

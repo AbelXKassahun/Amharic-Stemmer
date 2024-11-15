@@ -7,16 +7,19 @@ import (
 	utils "github.com/AbelXKassahun/Amharic-Stemmer/utils"
 )
 
+// this works for chained suffixes
 func RemoveSuffix(word []string) []string {
 	for i, val := range *utils.ReturnSuffixList() {
 		if i != 0 {
 			bareSuffix := strings.Split(val[0], "|")
 			rules := strings.Split(strings.TrimSpace(val[1]), "|")
 			// splittedSuffix := strings.Split(strings.ReplaceAll(string(val2[0]), "|",""), "")
-			if len(bareSuffix) > 1 {
-				findSuffixSubstringIndex(bareSuffix, word)
+			if len(bareSuffix) > 1  && len(word) >= 3 { // 1
+				removeLongSuffix(bareSuffix, word, rules)
 			} else {
-				removeShortSuffix(bareSuffix, word, rules)
+				if len(word) > 2 {
+					removeShortSuffix(bareSuffix, word, rules)
+				}
 			}
 		}
 	}
@@ -25,18 +28,23 @@ func RemoveSuffix(word []string) []string {
 
 func removeLongSuffix(bareSuffix []string, word []string, rules []string) []string{
 	start, end := findSuffixSubstringIndex(bareSuffix, word)
+	var temp []string
 	if start != -1 && end !=-1 {
 		// split the letter at the start index and then replace it
 		// according to the rules 
-		var temp []string
 		temp = append(temp, word[:start]...)
-		// copy(temp, word[:start])
-		house, _ := strconv.Atoi(rules[1])
-		converted := convertToDiffHouse(word[start], house)
-		
-		temp = append(temp, converted)
-		temp = append(temp, word[end+1:]...)
-		return temp
+		if rules[0] == "split" {
+			// copy(temp, word[:start])
+			house, _ := strconv.Atoi(rules[1])
+			converted := convertToDiffHouse(word[start], house)
+			
+			temp = append(temp, converted)
+			temp = append(temp, word[end+1:]...)
+			return temp
+		} else {
+			temp = append(temp, word[end+1:]...)
+			return temp
+		}
 	}
 
 	return []string{}
@@ -46,7 +54,6 @@ func removeLongSuffix(bareSuffix []string, word []string, rules []string) []stri
 func findSuffixSubstringIndex(bareSuffix []string, word []string) (int, int) {
 	i, j := 1, 0
 	start, end := -1, -1
-	// len(arr) - i >= len(sub) - j
 	for i < len(word) {
 		if j == 0 {
 			a := strings.Split(word[i], "")
@@ -62,10 +69,6 @@ func findSuffixSubstringIndex(bareSuffix []string, word []string) (int, int) {
 			}
 		} else {
 			if word[i] == bareSuffix[j] {
-				// check if we already have a start index
-				// if start == -1 {
-				// 	start = i
-				// }
 				// if the last suffix letter and the last letter of the word mathc
 				// and the start index has already been found
 				// then end is the last index of the word array 
