@@ -31,11 +31,11 @@ func InputCheck(word string, isFileName bool) (string, []error){
 
 	for _,val := range letters {
 		if isLetter.MatchString(val) {
-			err = append(err, fmt.Errorf("%s - is not an amharic letter, cant use english alphabets", val))
+			err = append(err, fmt.Errorf("in %v, %s - is not an amharic letter, cant use english alphabets", letters, val))
 		} else if isDigit.MatchString(val){
-			err = append(err, fmt.Errorf("%s - is not an amharic letter, cant use digits", val))
+			err = append(err, fmt.Errorf("in %v, %s - is not an amharic letter, cant use digits", letters,val))
 		} else if isSymbol.MatchString(val){
-			err = append(err, fmt.Errorf("%s - is not an amharic letter, cant use symbols", val))
+			err = append(err, fmt.Errorf("in %v, %s - is not an amharic letter, cant use symbols", letters,val))
 		}
 	}
 

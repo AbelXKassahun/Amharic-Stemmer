@@ -7,36 +7,36 @@ import (
 	utils "github.com/AbelXKassahun/Amharic-Stemmer/utils"
 )
 
-func ToAmh(word []string) string {
+func ToAmh(word []string) (string, error) {
 	var amhWord string
 
 	for _, val := range word {
 		if result, ok := SingleCharEngToAmh(val); ok != nil {
 			fmt.Printf("\n")
-			panic(ok)
+			return "", ok
 		} else {
 			amhWord += result
 			fmt.Println(result)
 		}
 	}
-	return amhWord
+	return amhWord, nil
 }
 
-func ToEng(word string) []string {
+func ToEng(word string) ([]string, error) {
 	var engWord []string
 	letters := strings.Split(word, "")
 
 	for _, val := range letters {
 		if result, ok := SingleCharAmhToEng(val); ok != nil {
 			fmt.Printf("\n")
-			panic(ok)
+			return []string{}, ok
 		} else {
 			engWord = append(engWord, result)
 			fmt.Println(result)
 		}
 	}
 	
-	return engWord
+	return engWord, nil
 }
 
 func SingleCharAmhToEng(letter string) (string, error) {
@@ -56,7 +56,7 @@ func SingleCharAmhToEng(letter string) (string, error) {
 	if found {
 		return result, nil
 	} else {
-		return "", fmt.Errorf("%v - not found (%v is not an amharic letter)", letter, letter)
+		return "", fmt.Errorf("%v is not found (%v is not an amharic letter)", letter, letter)
 	}
 }
 

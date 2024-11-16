@@ -10,20 +10,32 @@ import (
 func Stem(word string) string {
 	normedInput, ok := utils.InputCheck(word, false)
 	if ok != nil {
+		var errorMsgs string
 		for _, val := range ok {
-			log.Println(val)
+			errorMsgs += val.Error() + "\n"
 		}
-		// return
-		panic("invalid input") 
+		log.Println("from initial input check")
+		log.Println(ok)
+		return errorMsgs
 	}
 	word = normedInput
 
-	englishConverted := ToEng(word)
+	englishConverted, err := ToEng(word)
+	if err != nil {
+		log.Println("From ToEng ----")
+		log.Println(err.Error())
+		return err.Error()
+	}
 
 
 	suffixLessWord := RemoveSuffix(englishConverted)
 	// fmt.Println(eng)
-	amh := ToAmh(suffixLessWord)
+	amh, err := ToAmh(suffixLessWord)
+	if err != nil {
+		log.Println("From ToAmh ----")
+		log.Println(err.Error())
+		return err.Error()
+	}
 	// fmt.Println(amh)
 	return amh
 }

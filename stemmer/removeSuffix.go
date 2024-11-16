@@ -126,6 +126,8 @@ func convertToDiffHouse(letter string, house int) string {
 	return ""
 }
 
+
+// wrote this function to test out gotest
 func sample(a string) []string{
 	return strings.Split(a, ";")
 }
