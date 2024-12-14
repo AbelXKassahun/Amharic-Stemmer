@@ -10,6 +10,7 @@ import (
 // RemoveSuffix - removes suffix with the longest match
 func RemoveSuffix(word string) []string {
 	var suffixless []string
+	var suffixFound bool
 	for i, val := range *utils.ReturnSuffixList() {
 		if i != 0 {
 			lenW := utf8.RuneCountInString(word)
@@ -34,12 +35,15 @@ func RemoveSuffix(word string) []string {
 					// check if the first token of the suffix is a vowel
 					// if it is a vowel change the house (to 4th house) of the consonant that lost its vowel pair
 					handled := CheckForExceptions(word, []rune(suffix))
-					if handled != "" {
+					if len(handled) > 0 {
 						fmt.Printf("handled -> %v\n", handled)
-						suffixless = append(suffixless, handled)
+						for _, val := range handled {
+							suffixless = append(suffixless, val)
+						}
 					} else {
 						fmt.Printf("no-handled -> %v\n", handled)
 					}
+					suffixFound = true
 					break
 				}
 			} else {
@@ -47,34 +51,41 @@ func RemoveSuffix(word string) []string {
 			}
 		}
 	}
+	if !suffixFound {
+		suffixless = append(suffixless, word)
+	}
 	return suffixless
 }
 
-func CheckForExceptions(word string, suffix []rune) string {
+func CheckForExceptions(word string, suffix []rune) []string {
 	vowels := []string{"a", "u", "i", "ā", "é", "e", "o"}
-	var handled string
+	var handled []string
 	firstLetterOfSuffix := string(suffix[0])
 
 	if firstLetterOfSuffix == vowels[3] || firstLetterOfSuffix == vowels[6] {
 		fmt.Printf("suffix[0] -> %v\n", firstLetterOfSuffix)
 		handled = exception1(word)
 	}
-	// multiple exception could exist on the same string (so no else if )
+	// multiple exception could exist on the same string (so no else if)
 	// so chain them (pass the handled to the next exception check)
 
 	return handled
 }
 
-func exception1(word string) string {
-	var handled string
+func exception1(word string) []string {
+	var handled []string
 	lenW := utf8.RuneCountInString(word)
 	runedWord := []rune(word)
 	lastLetter := string(runedWord[lenW-1])
 	fmt.Printf("lastletter -> %v\n", lastLetter)
+	firstletter := convertToDiffHouse(lastLetter, 1)
 	fourthLetter := convertToDiffHouse(lastLetter, 4)
 	fmt.Printf("fourthletter -> %v\n", fourthLetter)
+	fmt.Printf("firstletter -> %v\n", firstletter)
 	//handled = word[:len(word)-1] + fourthLetter
-	handled = string(runedWord[:lenW-1]) + fourthLetter
+	handled = append(handled, string(runedWord[:lenW-1])+fourthLetter)
+	handled = append(handled, string(runedWord[:lenW-1])+firstletter)
+
 	return handled
 }
 

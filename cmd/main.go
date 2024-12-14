@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	arr, _ := stemmer.Stem("ሠማያት") // ኣላችሁ  ā|lā|č|hu እንስሶች የመላጦች
+	arr, _ := stemmer.Stem("ቅጠላቅጠሎች") // ኣላችሁ  ā|lā|č|hu እንስሶች የመላጦች ፈላለገ ሸዋወዳቸው ቅጠላቅጠል
 	fmt.Println(arr)
 	//miscellaneous.GetPrefixListFromAmhList()
 	//fmt.Println(stemmer.CheckForExceptions("ṭās", []rune("āwoč")))

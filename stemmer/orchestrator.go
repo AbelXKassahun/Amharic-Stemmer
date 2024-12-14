@@ -28,7 +28,8 @@ func Stem(word string) ([]string, string) {
 	}
 
 	prefixLessWord := RemovePrefix(englishConverted)
-	suffixLessWord := RemoveSuffix(prefixLessWord)
+	infixLessWord := RemoveInfix(prefixLessWord)
+	suffixLessWord := RemoveSuffix(infixLessWord)
 	suffixLessWord = append(suffixLessWord, removeVowels(suffixLessWord[0]))
 
 	var affixless []string

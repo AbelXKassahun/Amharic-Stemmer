@@ -10,10 +10,10 @@ import (
 	// "path/filepath"
 )
 
-//go:embed data/letters2.0.csv
+//go:embed data/letters.csv
 var lettersCSV []byte
 
-//go:embed data/suffixList1.csv
+//go:embed data/suffixList.csv
 var suffixesCSV []byte
 
 //go:embed data/prefixList.csv
