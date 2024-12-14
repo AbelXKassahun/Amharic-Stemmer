@@ -10,20 +10,19 @@ import (
 	// "path/filepath"
 )
 
-//go:embed data/letters.csv
+//go:embed data/letters2.0.csv
 var lettersCSV []byte
 
-//go:embed data/suffixList.csv
+//go:embed data/suffixList1.csv
 var suffixesCSV []byte
 
-func ReadFromFile(){
-
-}
+//go:embed data/prefixList.csv
+var prefixesCSV []byte
 
 func OpenFile(fileName string) ([][]string, error) {
 	var errorMsg error
 	file, errReading := os.Open(fileName)
-	
+
 	if errReading != nil {
 		errorMsg = fmt.Errorf("error opening the file <%v>", fileName)
 		return [][]string{}, errorMsg
@@ -75,4 +74,13 @@ func ReturnSuffixList() *[][]string {
 		log.Fatal(err)
 	}
 	return &suffixList
+}
+
+func ReturnPrefixList() *[][]string {
+	reader := csv.NewReader(bytes.NewReader(prefixesCSV))
+	prefixList, err := reader.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &prefixList
 }

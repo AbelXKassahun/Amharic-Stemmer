@@ -1,116 +1,81 @@
 package stemmer
 
 import (
-	"strconv"
+	"fmt"
+	"github.com/AbelXKassahun/Amharic-Stemmer/utils"
 	"strings"
-
-	utils "github.com/AbelXKassahun/Amharic-Stemmer/utils"
+	"unicode/utf8"
 )
 
-// this works for chained suffixes
-func RemoveSuffix(word []string) []string {
-	var processedWord []string
-	processedWord = append(processedWord, word...)
+// RemoveSuffix - removes suffix with the longest match
+func RemoveSuffix(word string) []string {
+	var suffixless []string
 	for i, val := range *utils.ReturnSuffixList() {
 		if i != 0 {
-			bareSuffix := strings.Split(val[0], "|")
-			rules := strings.Split(strings.TrimSpace(val[1]), "|")
-			// splittedSuffix := strings.Split(strings.ReplaceAll(string(val2[0]), "|",""), "")
-			if len(bareSuffix) > 1  && len(processedWord) >= 3 { // 1
-				processedWord = removeLongSuffix(bareSuffix, processedWord, rules)
+			lenW := utf8.RuneCountInString(word)
+			if len(word) > 3 {
+				suffix := strings.ReplaceAll(strings.TrimSpace(val[0]), "|", "")
+				lenS := utf8.RuneCountInString(suffix)
+				if lenW <= lenS {
+					continue
+				}
+				runedWord := []rune(word)
+				lastbit := string(runedWord[lenW-lenS:])
+
+				if strings.Contains(lastbit, suffix) {
+					fmt.Printf("suffix -> %v\n", suffix)
+					fmt.Printf("#lastBitOfWord -> %v\n", lastbit)
+					// lastbit = strings.ReplaceAll(lastbit, suffix, "")
+					fmt.Printf("OG word -> %v\n", word)
+					word = word[:len(word)-len(suffix)]
+					fmt.Printf("suffixless word -> %v\n", word)
+					// word += lastbit
+					suffixless = append(suffixless, word)
+					// check if the first token of the suffix is a vowel
+					// if it is a vowel change the house (to 4th house) of the consonant that lost its vowel pair
+					handled := CheckForExceptions(word, []rune(suffix))
+					if handled != "" {
+						fmt.Printf("handled -> %v\n", handled)
+						suffixless = append(suffixless, handled)
+					} else {
+						fmt.Printf("no-handled -> %v\n", handled)
+					}
+					break
+				}
 			} else {
-				if len(processedWord) > 2 {
-					processedWord = removeShortSuffix(bareSuffix, processedWord, rules)
-				}
+				suffixless = append(suffixless, word)
 			}
 		}
 	}
-	return processedWord
+	return suffixless
 }
 
-func removeLongSuffix(bareSuffix []string, word []string, rules []string) []string{
-	start, end := findSuffixSubstringIndex(bareSuffix, word)
-	var temp []string
-	if start != -1 && end !=-1 {
-		// split the letter at the start index and then replace it
-		// according to the rules 
-		temp = append(temp, word[:start]...)
-		if rules[0] == "split" {
-			// copy(temp, word[:start])
-			house, _ := strconv.Atoi(rules[1])
-			converted := convertToDiffHouse(word[start], house)
-			
-			temp = append(temp, converted)
-			temp = append(temp, word[end+1:]...)
-			return temp
-		} else {
-			temp = append(temp, word[end+1:]...)
-			return temp
-		}
-	}
+func CheckForExceptions(word string, suffix []rune) string {
+	vowels := []string{"a", "u", "i", "ā", "é", "e", "o"}
+	var handled string
+	firstLetterOfSuffix := string(suffix[0])
 
-	return word
+	if firstLetterOfSuffix == vowels[3] || firstLetterOfSuffix == vowels[6] {
+		fmt.Printf("suffix[0] -> %v\n", firstLetterOfSuffix)
+		handled = exception1(word)
+	}
+	// multiple exception could exist on the same string (so no else if )
+	// so chain them (pass the handled to the next exception check)
+
+	return handled
 }
 
-// substring = contingous
-func findSuffixSubstringIndex(bareSuffix []string, word []string) (int, int) {
-	i, j := 1, 0
-	start, end := -1, -1
-	for i < len(word) {
-		if j == 0 {
-			a := strings.Split(word[i], "")
-			for _, val := range a {
-				if val == bareSuffix[j] {
-					start = i
-					i++; j++
-				}
-			}
-			// a replacement of continue lol
-			if start == -1 {
-				i++
-			}
-		} else {
-			if word[i] == bareSuffix[j] {
-				// if the last suffix letter and the last letter of the word mathc
-				// and the start index has already been found
-				// then end is the last index of the word array 
-				if j == len(bareSuffix)-1 && start != -1 {
-					end = i
-					return start, end
-				}
-				// we update both index if they both match
-				i++; j++
-			} else {
-				// we dont increment i here
-				j = 0;
-				start, end = -1, -1
-			}
-		}
-	}
-	return start, end
-}
-
-func removeShortSuffix(bareSuffix []string, word []string, rules []string) []string {
-	if rules[0] == "split" {
-		lastWordSplit := strings.Split(word[len(word)-1], "")
-		for _, val := range lastWordSplit {
-			if val == bareSuffix[0] {
-				var temp []string
-				
-				house, _ := strconv.Atoi(rules[1])
-				
-				temp = append(temp, word[:len(word)-1]...)
-				temp = append(temp, convertToDiffHouse(word[len(word)-1], house))
-				return temp
-			}
-		}
-	} else if rules[0] == "no-split" {
-		if word[len(word)-1] == bareSuffix[0] {
-			// remove the suffix from the word without conversion
-			return word[:len(word)-1]
-		}
-	}
-	return word
+func exception1(word string) string {
+	var handled string
+	lenW := utf8.RuneCountInString(word)
+	runedWord := []rune(word)
+	lastLetter := string(runedWord[lenW-1])
+	fmt.Printf("lastletter -> %v\n", lastLetter)
+	fourthLetter := convertToDiffHouse(lastLetter, 4)
+	fmt.Printf("fourthletter -> %v\n", fourthLetter)
+	//handled = word[:len(word)-1] + fourthLetter
+	handled = string(runedWord[:lenW-1]) + fourthLetter
+	return handled
 }
 
 func convertToDiffHouse(letter string, house int) string {
@@ -124,10 +89,4 @@ func convertToDiffHouse(letter string, house int) string {
 		}
 	}
 	return ""
-}
-
-
-// wrote this function to test out gotest
-func sample(a string) []string{
-	return strings.Split(a, ";")
 }
