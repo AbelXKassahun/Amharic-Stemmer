@@ -15,7 +15,7 @@ func RemoveInfix(word string) string {
 }
 
 func infixPattern1Removal(word string) (string, bool) {
-	pattern := `([hlḥmśrsšqbtčnñkxwzžydǧgṭċp̣ṣṡfpv])([a])([hlḥmśrsšqbtčnñkxwzžydǧgṭċp̣ṣṡfpv])([ā])([hlḥmśrsšqbtčnñkxwzžydǧgṭċp̣ṣṡfpv])([a])`
+	pattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ao])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ā])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])`
 	re := regexp.MustCompile(pattern)
 	var found bool
 	if re.MatchString(word) {
@@ -41,20 +41,20 @@ func infixPattern1Removal(word string) (string, bool) {
 }
 
 func infixPattern2Removal(word string) (string, bool) {
-	pattern := `([hlḥmśrsšqbtčnñkxwzžydǧgṭċp̣ṣṡfpv])([hlḥmśrsšqbtčnñkxwzžydǧgṭċp̣ṣṡfpv])([a])([hlḥmśrsšqbtčnñkxwzžydǧgṭċp̣ṣṡfpv])([ā])`
+	pattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ā])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)`
 	re := regexp.MustCompile(pattern)
 	var found bool
 	if re.MatchString(word) {
 		found = true
-		match := re.FindString(word)
-		fmt.Println("matches ", match)
+		subMatches := re.FindStringSubmatch(word)
+		fmt.Println(subMatches[6] + ", " + subMatches[7] + ", " + subMatches[8] + ", " + subMatches[9])
 	}
 	// Replace the matched pattern by removing CF (3rd and 4th groups).
 	result := re.ReplaceAllStringFunc(word, func(match string) string {
 		subMatches := re.FindStringSubmatch(match)
 
-		if len(subMatches) >= 6 {
-			return ""
+		if len(subMatches) >= 10 {
+			return subMatches[6] + subMatches[7] + subMatches[8] + subMatches[9]
 		}
 		return match
 	})

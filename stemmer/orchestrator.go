@@ -30,7 +30,9 @@ func Stem(word string) ([]string, string) {
 	prefixLessWord := RemovePrefix(englishConverted)
 	infixLessWord := RemoveInfix(prefixLessWord)
 	suffixLessWord := RemoveSuffix(infixLessWord)
-	suffixLessWord = append(suffixLessWord, removeVowels(suffixLessWord[0]))
+	if len(suffixLessWord) != 0 { // only remove vowels when the word has affixes
+		suffixLessWord = append(suffixLessWord, removeVowels(suffixLessWord[0]))
+	}
 
 	var affixless []string
 	for _, val := range suffixLessWord {

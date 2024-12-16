@@ -6,10 +6,30 @@ import (
 )
 
 func main() {
-	arr, _ := stemmer.Stem("ቅጠላቅጠሎች") // ኣላችሁ  ā|lā|č|hu እንስሶች የመላጦች ፈላለገ ሸዋወዳቸው ቅጠላቅጠል
-	fmt.Println(arr)
-	//miscellaneous.GetPrefixListFromAmhList()
-	//fmt.Println(stemmer.CheckForExceptions("ṭās", []rune("āwoč")))
+	arr, _ := stemmer.Stem("አንበሶቻችን")
+	fmt.Println(arr) // [ሸወድ ሸወዳ ሸወደ ሽውድ]
+
+	//pattern := `^(l)(a)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([aā]?)$`
+	//re := regexp.MustCompile(pattern)
+	//re.ReplaceAllStringFunc("lamalaw", func(match string) string {
+	//	subMatches := re.FindStringSubmatch(match)
+	//	for _, val := range subMatches {
+	//		fmt.Printf("%v, ", val)
+	//	}
+	//	fmt.Println("")
+	//	return match
+	//})
+	//wrds := []string{"ḥ", "ś", "š", "č", "ñ", "ž", "ǧ", "ṭ", "ċ", "p̣", "ṣ", "ṡ", "h"}
+	//for _, val := range wrds {
+	//	re.ReplaceAllStringFunc(fmt.Sprintf("la%va%v", val, val), func(match string) string {
+	//		subMatches := re.FindStringSubmatch(match)
+	//		for _, val := range subMatches {
+	//			fmt.Printf("%v, ", val)
+	//		}
+	//		fmt.Println("")
+	//		return match
+	//	})
+	//}
 }
 
 // func main() {
