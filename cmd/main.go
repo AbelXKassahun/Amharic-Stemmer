@@ -6,8 +6,40 @@ import (
 )
 
 func main() {
-	arr, _ := stemmer.Stem("አንበሶቻችን")
-	fmt.Println(arr) // [ሸወድ ሸወዳ ሸወደ ሽውድ]
+	demo := []string{
+		"አንበሶቹ",
+		"አንበሳ",
+		"አበባቸው",
+		"አበቦቻቸው",
+		"ሰማዕታት",
+		//"ጎበኛላችሁ",
+		//"ትሄዳላችሁ",
+		//"ታመሻላችሁ",
+		//"ሞታላችሁ",
+		//"ሌቦች",
+		//"ዝንጀሮቻችን",
+		//"ደበደባቸው",
+		//"መፅሀፍት",
+		//"ፈላለገ",
+		//"ቆራረጠ",
+		//"ተመቻቸ",
+		//"ሸዋወዳቸው",
+		//"ቅጠላቅጠል",
+		//"ቅጠላቅጠሎች",
+		//"ለበሰ",
+		//"ለመለወጥ",
+		//"ለመብራት",
+		//"ለነገ",
+		//"ለቀይ",
+		//"ለእሳት",
+	}
+	for _, val := range demo {
+		arr, _ := stemmer.Stem(val)
+		fmt.Println(val, arr) //ታመሻላችሁ [ኣመሸ ኣምሽ]
+	}
+
+	//arr, _ := stemmer.Stem("ተመቻቸ")
+	//fmt.Println(arr)
 
 	//pattern := `^(l)(a)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([aā]?)$`
 	//re := regexp.MustCompile(pattern)

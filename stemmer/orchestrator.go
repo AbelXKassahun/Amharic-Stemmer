@@ -28,14 +28,15 @@ func Stem(word string) ([]string, string) {
 	}
 
 	prefixLessWord := RemovePrefix(englishConverted)
-	infixLessWord := RemoveInfix(prefixLessWord)
-	suffixLessWord := RemoveSuffix(infixLessWord)
-	if len(suffixLessWord) != 0 { // only remove vowels when the word has affixes
-		suffixLessWord = append(suffixLessWord, removeVowels(suffixLessWord[0]))
-	}
-
+	suffixLessWord := RemoveSuffix2(prefixLessWord)
+	infixLessWord := RemoveInfix(suffixLessWord)
+	result := []string{infixLessWord, removeVowels(infixLessWord)}
+	//suffixLessWord := RemoveSuffix(infixLessWord)
+	//if len(suffixLessWord) != 0 { // only remove vowels when the word has affixes
+	//	suffixLessWord = append(suffixLessWord, removeVowels(suffixLessWord[0]))
+	//}
 	var affixless []string
-	for _, val := range suffixLessWord {
+	for _, val := range result {
 		amh, err := ToAmh(val)
 		if err != nil {
 			log.Println("From ToAmh ----")

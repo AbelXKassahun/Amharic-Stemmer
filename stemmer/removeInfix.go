@@ -1,38 +1,40 @@
 package stemmer
 
 import (
-	"fmt"
 	"regexp"
+	"strings"
 )
 
+//var Consonant = `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])`
+
 func RemoveInfix(word string) string {
-	if infix1removal, found := infixPattern1Removal(word); found {
-		return infix1removal
-	} else if infix2removal, found := infixPattern2Removal(word); found {
-		return infix2removal
+	if infixRemoval, found := infixPattern1Removal(word); found {
+		return infixRemoval
+	} else if infixRemoval, found := infixPattern2Removal(word); found {
+		return infixRemoval
+	} else if infixRemoval, found := infixExceptionRemoval(word); found {
+		return infixRemoval
 	}
 	return word
 }
 
 func infixPattern1Removal(word string) (string, bool) {
-	pattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ao])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ā])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])`
+	pattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([ao])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([ā])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])`
 	re := regexp.MustCompile(pattern)
 	var found bool
 	if re.MatchString(word) {
 		found = true
-		match := re.FindString(word)
-		fmt.Println("matches ", match)
+		//match := re.FindString(word)
+		//fmt.Println("matches ", match)
 	}
 	// Replace the matched pattern by removing CF (3rd and 4th groups).
 	result := re.ReplaceAllStringFunc(word, func(match string) string {
 		subMatches := re.FindStringSubmatch(match)
-		for _, val := range subMatches {
-			fmt.Printf("%v, ", val)
-		}
-		if len(subMatches) >= 7 {
+
+		if len(subMatches) >= 8 {
 			// Reconstruct: keep 1st, 2nd, 5th, and 6th groups only
-			fmt.Println(subMatches[1] + ", " + subMatches[2] + ", " + subMatches[5] + ", " + subMatches[6])
-			return subMatches[1] + subMatches[2] + subMatches[5] + subMatches[6]
+			//fmt.Println(subMatches[1] + ", " + subMatches[2] + ", " + subMatches[5] + ", " + subMatches[6])
+			return subMatches[1] + subMatches[2] + subMatches[5] + subMatches[6] + subMatches[7]
 		}
 		return match
 	})
@@ -41,13 +43,15 @@ func infixPattern1Removal(word string) (string, bool) {
 }
 
 func infixPattern2Removal(word string) (string, bool) {
-	pattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ā])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)`
+	// CCaCāCCaC
+	pattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([ā])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])`
+
 	re := regexp.MustCompile(pattern)
 	var found bool
 	if re.MatchString(word) {
 		found = true
-		subMatches := re.FindStringSubmatch(word)
-		fmt.Println(subMatches[6] + ", " + subMatches[7] + ", " + subMatches[8] + ", " + subMatches[9])
+		//subMatches := re.FindStringSubmatch(word)
+		//fmt.Println(subMatches[6] + ", " + subMatches[7] + ", " + subMatches[8] + ", " + subMatches[9])
 	}
 	// Replace the matched pattern by removing CF (3rd and 4th groups).
 	result := re.ReplaceAllStringFunc(word, func(match string) string {
@@ -60,4 +64,19 @@ func infixPattern2Removal(word string) (string, bool) {
 	})
 
 	return result, found
+}
+
+func infixExceptionRemoval(word string) (string, bool) {
+	infixExceptions := []string{
+		"ተመቻ-ተመቸ",
+	}
+	for _, val := range infixExceptions {
+		exceptionNNew := strings.Split(val, "-")
+		exception, _ := ToEng(exceptionNNew[0])
+		if strings.Contains(word, exception) {
+			newWord, _ := ToEng(exceptionNNew[1])
+			return newWord, true
+		}
+	}
+	return word, false
 }

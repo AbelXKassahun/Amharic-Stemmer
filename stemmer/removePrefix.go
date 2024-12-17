@@ -26,9 +26,15 @@ func RemovePrefix(word string) string {
 			firstBitOfWord := string(runedWord[:lenP])
 
 			if strings.Contains(firstBitOfWord, prefix) {
+				aFamily := []string{"at", "an", "ay", "al"}
 				fmt.Printf("first bit of word -> %v\n", firstBitOfWord)
 				fmt.Printf("prefix -> %v\n", prefix)
 				// all if's will be refactored to a function (checkException function)
+				for _, val := range aFamily {
+					if prefix == val {
+						return aPrefixHandler(word)
+					}
+				}
 				if prefix == "la" {
 					return laPrefixHandler(word)
 				} else {
@@ -51,12 +57,12 @@ func laPrefixHandler(word string) string {
 
 	// if the suffix remover works perfectly replace ([aā]?) with a better alternative like ([a])
 	// you need to reconsider the last capture group based on your progress in vowel starting suffix removal
-	pattern := `^(l)(a)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([aā]?)$`
+	pattern := `^(l)(a)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([aā]?)$`
 	re := regexp.MustCompile(pattern)
 
 	for _, val := range exceptions {
 		if strings.Contains(word, val) {
-			return strings.Replace(word, "la", "", 1)
+			return strings.Replace(val, "la", "", 1)
 		}
 	}
 
@@ -72,4 +78,28 @@ func laPrefixHandler(word string) string {
 	//}
 
 	return word
+}
+
+func aPrefixHandler(word string) string {
+	// a, n, C, a|o, C, ā?, C?, C
+	pattern := `^([a])([tnyl])(.{2,})([mw])$`
+	re := regexp.MustCompile(pattern)
+
+	if re.MatchString(word) {
+		//return strings.Replace(word, "an", "", 1)
+		return word[2:]
+	} else {
+		pattern := `^([a])([tnyl])(.{2,})([ā])$`
+		exclude := "bas"
+		re := regexp.MustCompile(pattern)
+		if re.MatchString(word) && !containsExcludedSequence(word, exclude) {
+			return word[2:]
+		}
+	}
+
+	return word
+}
+
+func containsExcludedSequence(input, exclude string) bool {
+	return regexp.MustCompile(exclude).MatchString(input)
 }

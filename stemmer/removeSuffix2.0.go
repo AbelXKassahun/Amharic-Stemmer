@@ -3,12 +3,13 @@ package stemmer
 import (
 	"fmt"
 	"github.com/AbelXKassahun/Amharic-Stemmer/utils"
+	"log"
+	"strconv"
 	"strings"
 	"unicode/utf8"
 )
 
 func RemoveSuffix2(word string) string {
-	var suffixFound bool
 	if len(word) > 3 {
 		for i, val := range *utils.ReturnSuffixList() {
 			if i != 0 {
@@ -21,46 +22,94 @@ func RemoveSuffix2(word string) string {
 				runedWord := []rune(word)
 				lastbit := string(runedWord[lenW-lenS:])
 
-				if strings.Contains(lastbit, suffix) {
-					fmt.Printf("suffix -> %v\n", suffix)
-					fmt.Printf("#lastBitOfWord -> %v\n", lastbit)
-					fmt.Printf("OG word -> %v\n", word)
+				if strings.Contains(lastbit, suffix) { // if lastbit == suffix {
+					//fmt.Printf("suffix -> %v\n", suffix)
+					//fmt.Printf("#lastBitOfWord -> %v\n", lastbit)
+					//fmt.Printf("OG word -> %v\n", word)
+					var rule []string
+					if strings.ReplaceAll(val[1], " ", "") != "" {
+						rule = strings.Split(strings.TrimSpace(val[1]), "|")
+					} else {
+						rule = []string{"#", "0"}
+					}
 
-					// first check the rule (exception) of the suffix
-					// rule is exception list and last word conversion
-					// suffix removal is after rule check (exception check)
-					// apply the last word conversion rule when removing suffix
-					// which means after checking the exception list
-					// last word conversion rule check is done outside (after) checkForExceptions function
-					word = checkForExceptions(word, []rune(suffix))
-
-					// check for last word conversion rule here
+					fmt.Printf("val:%v, rule:%v, len:%v, suffix:%v \n", val[1], rule, len(rule), suffix)
 					word = word[:len(word)-len(suffix)]
-					fmt.Printf("suffixless word -> %v\n", word)
-
-					suffixFound = true
+					//fmt.Printf("suffixless word -> %v\n", word)
+					if len(rule) != 0 {
+						if rule[0] != "#" { // the suffix has an exception list
+							var found bool
+							word, found = checkForExceptions(word, rule)
+							if !found {
+								lwcRule, _ := strconv.Atoi(rule[1])
+								if lwcRule != 0 { // convert the last letter after the suffix removal
+									word = lastWordConversion(word, lwcRule)
+								}
+							}
+						} else { // suffix has no exception list
+							lwcRule, _ := strconv.Atoi(rule[1])
+							if lwcRule != 0 { // convert the last letter after the suffix removal
+								word = lastWordConversion(word, lwcRule)
+							}
+						}
+					}
 					break
 				}
 			}
 		}
-	} else { // also should be outside the loop
-		return word
-	}
-
-	if !suffixFound {
-		return word
 	}
 	return word
 }
-func checkForExceptions(word string, suffix []rune) string {
+
+func lastWordConversion(word string, lwcRule int) string {
+	lastLetter := word[len(word)-1:]
+	newLastLetter := convertToDiffHouse(lastLetter, lwcRule)
+	word = word[:len(word)-1]
+	word += newLastLetter
+	return word
+}
+
+func checkForExceptions(word string, rule []string) (string, bool) {
 	// open the extension file
-	// transliterate the first word we get when we split the line with -
+	lineStart, _ := strconv.Atoi(rule[0])
+	lineEnd := "####"
+
+	for i, val := range *utils.ReturnExceptionsList() {
+		if i == 0 {
+			continue
+		}
+		if i >= lineStart-1 && val[0] != lineEnd {
+			// transliterate the first word we get when we split the line with -
+			exceptionRow := strings.Split(val[0], "-")
+			exception, err := ToEng(exceptionRow[0])
+			if err != nil {
+				log.Println("From checkForExceptions (exceptions) ----")
+				log.Println(err.Error())
+				panic(err)
+			}
+			if strings.Contains(word, exception) {
+				newWord, err1 := ToEng(exceptionRow[1])
+				if err1 != nil {
+					log.Println("From checkForExceptions (newWord)----")
+					log.Println(err1.Error())
+					panic(err1)
+				}
+				//word = strings.Replace(word, exception, newWord, 1)
+				// this might be the holy grail of solutions
+				//return word, true
+				return newWord, true
+			}
+		} else if i >= lineStart-1 && val[0] == lineEnd {
+			return word, false
+		}
+	}
 	// check if the first word exists in word
 	// if it does then transliterate the second word then replace
 	// return replaced
 	// no suffix removal or last word conversion rule check here
-	return word
+	return word, false
 }
+
 func convertToDiffHouse(letter string, house int) string {
 	for _, val := range *utils.ReturnLetters() {
 		for _, val2 := range val {

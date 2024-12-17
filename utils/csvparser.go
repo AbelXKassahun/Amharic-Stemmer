@@ -19,6 +19,9 @@ var suffixesCSV []byte
 //go:embed data/prefixList.csv
 var prefixesCSV []byte
 
+//go:embed data/exceptions.csv
+var exceptionsCSV []byte
+
 func OpenFile(fileName string) ([][]string, error) {
 	var errorMsg error
 	file, errReading := os.Open(fileName)
@@ -83,4 +86,13 @@ func ReturnPrefixList() *[][]string {
 		log.Fatal(err)
 	}
 	return &prefixList
+}
+
+func ReturnExceptionsList() *[][]string {
+	reader := csv.NewReader(bytes.NewReader(exceptionsCSV))
+	exceptionsList, err := reader.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &exceptionsList
 }
