@@ -6,41 +6,58 @@ import (
 )
 
 func main() {
-	//demo := []string{
-	//	"አንበሶቹ",
-	//	"አንበሳ",
-	//	"አበባቸው",
-	//	"አበቦቻቸው",
-	//	"ሰማዕታት",
-	//	"ጎበኛላችሁ",
-	//	"ትሄዳላችሁ",
-	//	"ታመሻላችሁ",
-	//	"ሞታላችሁ",
-	//	"ሌቦች",
-	//	"ዝንጀሮቻችን",
-	//	"ደበደባቸው",
-	//	"መፅሀፍት",
-	//	"ፈላለገ",
-	//	"ቆራረጠ",
-	//	"ተመቻቸ",
-	//	"ሸዋወዳቸው",
-	//	"ቅጠላቅጠል",
-	//	"ቅጠላቅጠሎች",
-	//	"ለበሰ",
-	//	"ለመለወጥ",
-	//	"ለመብራት",
-	//	"ለነገ",
-	//	"ለቀይ",
-	//	"ለእሳት",
-	//}
-	//for _, val := range demo {
-	//	arr, _ := stemmer.Stem(val)
-	//	fmt.Println(val, arr) //ታመሻላችሁ [ኣመሸ ኣምሽ] መሸ ምሽ
-	//}
+	demo := []string{
+		"አንበሶቹ",
+		"አንበሳ",
+		"አበባቸው",
+		"አበቦቻቸው",
+		"ሰማዕታት",
+		"ጎበኛላችሁ",
+		"ትሄዳላችሁ",
+		"ታመሻላችሁ",
+		"ሞታላችሁ",
+		"ሌቦች",
+		"ዝንጀሮቻችን",
+		"ደበደባቸው",
+		"መፅሀፍት",
+		"ፈላለገ",
+		"ቆራረጠ",
+		"ተመቻቸ",
+		"ሸዋወዳቸው",
+		"ቅጠላቅጠል",
+		"ቅጠላቅጠሎች",
+		"ለበሰ",
+		"ለመለወጥ",
+		"ለመብራት",
+		"ለነገ",
+		"ለቀይ",
+		"ለእሳት",
+		"ትምህርት",
+		"ተነሳን",
+		"ሄድን",
+		"በላን",
+		"ጠጣን",
+		"ከፈልን",
+		"ዐልበላም",
+		"ከስራ",
+		"ከጥናጥ",
+		"ከደሞዝ",
+		"ከበሮ",
+		"ከነቤተሰቦቻቸው",
+		"እባብ",
+		"ብረታብረት",
+		"ቀጫጭን",
+		"የተባበሩት",
+	}
 
-	arr := stemmer.InputCheck("፲፳ሐ{8}{&#]*/  .   ፴፵፵ሙ፤98ስ።") // ሐ:ሙ፤ስ።  ሐ:*/ሙ፤ስ።
+	for _, val := range demo {
+		arr, _ := stemmer.Stem(val)
+		fmt.Println(val, arr) //ታመሻላችሁ [ኣመሸ ኣምሽ] መሸ ምሽ ቀጫጭን [ቀጫጨ ቅጭጭ]
+	}
 
-	fmt.Println(arr)
+	//arr, _ := stemmer.Stem("ሰማዕታት") // ሐ:ሙ፤ስ።  ሐ:*/ሙ፤ስ። [ሰማእት ስምእት]
+	//arr := stemmer.KaHandler("kafaln")
+	//fmt.Println(arr)
 
 	//pattern := `^(l)(a)([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([a])([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpv]|ǧ|p̣)([aā]?)$`
 	//re := regexp.MustCompile(pattern)
@@ -76,7 +93,7 @@ func main() {
 // 		fmt.Println("no input detected")
 // 		return
 // 	} else if word != "" {
-// 		normedInput, ok := utils.InputCheck(word, false)
+// 		normedInput, ok := utils.inputCheck(word, false)
 // 		if ok != nil {
 // 			for _, val := range ok {
 // 				fmt.Println(val)
@@ -86,7 +103,7 @@ func main() {
 // 		}
 // 		word = normedInput
 // 	} else if fileName != "" {
-// 		val, ok := utils.InputCheck(word, true)
+// 		val, ok := utils.inputCheck(word, true)
 // 		if ok != nil {
 // 			panic(ok)
 // 		}

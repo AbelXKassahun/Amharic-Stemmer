@@ -23,7 +23,7 @@ func ToAmh(word string) (string, error) {
 }
 
 func EngToArray(word string) []string {
-	vowels := []string{"a", "u", "i", "ā", "é", "e", "o", "&"}
+	vowels := []string{"a", "u", "i", "ā", "é", "o", "&"}
 	tokens := strings.Split(word, "")
 
 	var arr = make([]string, len(tokens))
@@ -126,7 +126,7 @@ func SingleCharAmhToEng(letter string) (string, error) {
 }
 
 func removeVowels(word string) string {
-	vowels := []string{"a", "u", "i", "ā", "é", "e", "o", "&"}
+	vowels := []string{"a", "u", "i", "ā", "é", "o", "&"}
 	tokens := strings.Split(word, "")
 
 	var arr = make([]string, len(tokens))

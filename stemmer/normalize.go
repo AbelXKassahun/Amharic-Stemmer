@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func InputCheck(word string) string {
+func inputCheck(word string) string {
 	word = strings.ReplaceAll(word, " ", "")
 
 	// pattern := `^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).+$`
@@ -33,12 +33,14 @@ func InputCheck(word string) string {
 	return word
 }
 
-func handleRedundantLetters(word string) string {
-	redundant := []string{"ዐ አ", "ዑ ኡ", "ዒ ኢ", "ዓ ኣ", "ዔ ኤ", "ዕ እ", "ዖ ኦ",
+func HandleRedundantLetters(word string) string {
+	redundant := []string{
+		"ዐ አ", "ዑ ኡ", "ዒ ኢ", "ዓ ኣ", "ዔ ኤ", "ዕ እ", "ዖ ኦ",
 		"ሐ ሀ", "ሑ ሁ", "ሒ ሂ", "ሓ ሃ", "ሔ ሄ", "ሕ ህ", "ሖ ሆ",
 		"ኀ ሀ", "ኁ ሁ", "ኂ ሂ", "ኃ ሃ", "ኄ ሄ", "ኅ ህ", "ኆ ሆ",
-		"ሠ ሰ", "ሡ ሱ", "ሢ ሲ", "ሣ ሳ", "ሤ ሴ", "ሥ ስ", "ሦ ሶ",
-		"ጸ ፀ", "ጹ ፁ", "ጺ ፂ", "ጻ ፃ", "ጼ ፄ", "ጽ ፅ", "ጾ ፆ"}
+		"ሠ ሰ", "ሡ ሱ", "ሢ ሲ", "ሣ ሳ", "ሤ ሴ", "ሥ ስ", "ሦ ሶ", // x
+		"ጸ ፀ", "ጹ ፁ", "ጺ ፂ", "ጻ ፃ", "ጼ ፄ", "ጽ ፅ", "ጾ ፆ", // x
+	}
 
 	for _, val := range redundant {
 		words := strings.Split(val, " ")

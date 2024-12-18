@@ -3,6 +3,7 @@ package stemmer
 import (
 	"github.com/AbelXKassahun/Amharic-Stemmer/utils"
 	"log"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -32,6 +33,14 @@ func RemoveSuffix2(word string) string {
 						rule = []string{"#", "0"}
 					}
 
+					if suffix == "n" {
+						result, found := nHandler(word)
+						if found {
+							word = result
+							break
+						}
+					}
+
 					//fmt.Printf("val:%v, rule:%v, len:%v, suffix:%v \n", val[1], rule, len(rule), suffix)
 					word = word[:len(word)-len(suffix)]
 					//fmt.Printf("suffixless word -> %v\n", word)
@@ -41,8 +50,10 @@ func RemoveSuffix2(word string) string {
 							word, found = checkForExceptions(word, rule)
 							if !found {
 								lwcRule, _ := strconv.Atoi(rule[1])
-								if lwcRule != 0 { // convert the last letter after the suffix removal
+								if lwcRule != 0 && lwcRule != -1 { // convert the last letter after the suffix removal
 									word = lastWordConversion(word, lwcRule)
+								} else if lwcRule == -1 {
+									word += suffix // add the suffix back lmfao
 								}
 							}
 						} else { // suffix has no exception list
@@ -58,6 +69,29 @@ func RemoveSuffix2(word string) string {
 		}
 	}
 	return word
+}
+
+func nHandler(word string) (string, bool) {
+	var found bool
+	firstPattern := `([ā])([n])$`
+	secondPattern := `([ḥśščñžṭċṣṡhlmrsqbtnkxwzydfpvj9g])([n])$`
+	pattern1 := regexp.MustCompile(firstPattern)
+	pattern2 := regexp.MustCompile(secondPattern)
+
+	if pattern1.MatchString(word) {
+		word = pattern1.ReplaceAllStringFunc(word, func(match string) string {
+			subMatches := pattern1.FindStringSubmatch(match)
+			return subMatches[1]
+		})
+		found = true
+	} else if pattern2.MatchString(word) {
+		word = pattern2.ReplaceAllStringFunc(word, func(match string) string {
+			subMatches := pattern2.FindStringSubmatch(match)
+			return subMatches[1] + "a"
+		})
+		found = true
+	}
+	return word, found
 }
 
 func lastWordConversion(word string, lwcRule int) string {

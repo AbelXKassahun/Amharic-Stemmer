@@ -7,9 +7,9 @@ import (
 )
 
 func Stem(word string) ([]string, string) {
-	word = InputCheck(word)
+	word = inputCheck(word)
 	// check if the word is a stop word here.
-	word = handleRedundantLetters(word)
+	word = HandleRedundantLetters(word)
 
 	englishConverted, err := ToEng(word)
 	if err != nil {
