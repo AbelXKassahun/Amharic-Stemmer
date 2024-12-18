@@ -1,7 +1,6 @@
 package stemmer
 
 import (
-	"fmt"
 	"github.com/AbelXKassahun/Amharic-Stemmer/utils"
 	"log"
 	"strconv"
@@ -33,7 +32,7 @@ func RemoveSuffix2(word string) string {
 						rule = []string{"#", "0"}
 					}
 
-					fmt.Printf("val:%v, rule:%v, len:%v, suffix:%v \n", val[1], rule, len(rule), suffix)
+					//fmt.Printf("val:%v, rule:%v, len:%v, suffix:%v \n", val[1], rule, len(rule), suffix)
 					word = word[:len(word)-len(suffix)]
 					//fmt.Printf("suffixless word -> %v\n", word)
 					if len(rule) != 0 {

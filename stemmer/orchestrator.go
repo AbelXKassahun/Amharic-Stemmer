@@ -1,24 +1,15 @@
 package stemmer
 
 import (
-	"github.com/AbelXKassahun/Amharic-Stemmer/utils"
 	// "fmt"
 	// "strings"
 	"log"
 )
 
 func Stem(word string) ([]string, string) {
-	normedInput, ok := utils.InputCheck(word, false)
-	if ok != nil {
-		var errorMsgs string
-		for _, val := range ok {
-			errorMsgs += val.Error() + "\n"
-		}
-		log.Println("from initial input check")
-		log.Println(ok)
-		return []string{}, errorMsgs
-	}
-	word = normedInput
+	word = InputCheck(word)
+	// check if the word is a stop word here.
+	word = handleRedundantLetters(word)
 
 	englishConverted, err := ToEng(word)
 	if err != nil {

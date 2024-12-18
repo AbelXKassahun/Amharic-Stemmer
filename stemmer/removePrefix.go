@@ -1,7 +1,6 @@
 package stemmer
 
 import (
-	"fmt"
 	"github.com/AbelXKassahun/Amharic-Stemmer/utils"
 	"regexp"
 	"strings"
@@ -27,8 +26,8 @@ func RemovePrefix(word string) string {
 
 			if strings.Contains(firstBitOfWord, prefix) {
 				aFamily := []string{"at", "an", "ay", "al"}
-				fmt.Printf("first bit of word -> %v\n", firstBitOfWord)
-				fmt.Printf("prefix -> %v\n", prefix)
+				//fmt.Printf("first bit of word -> %v\n", firstBitOfWord)
+				//fmt.Printf("prefix -> %v\n", prefix)
 				// all if's will be refactored to a function (checkException function)
 				for _, val := range aFamily {
 					if prefix == val {
@@ -40,7 +39,7 @@ func RemovePrefix(word string) string {
 				} else {
 					// blatant removal
 					word = string(runedWord[lenP:])
-					fmt.Printf("prefixless word -> %v\n", word)
+					//fmt.Printf("prefixless word -> %v\n", word)
 
 					return word
 				}
@@ -68,8 +67,6 @@ func laPrefixHandler(word string) string {
 
 	if !re.MatchString(word) {
 		return strings.Replace(word, "la", "", 1)
-	} else {
-		fmt.Println("maatches ahhhh")
 	}
 	//if !re.MatchString(word) {
 	//	match := re.FindString(word)

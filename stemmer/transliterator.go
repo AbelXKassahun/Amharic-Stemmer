@@ -23,7 +23,7 @@ func ToAmh(word string) (string, error) {
 }
 
 func EngToArray(word string) []string {
-	vowels := []string{"a", "u", "i", "ā", "é", "e", "o"}
+	vowels := []string{"a", "u", "i", "ā", "é", "e", "o", "&"}
 	tokens := strings.Split(word, "")
 
 	var arr = make([]string, len(tokens))
@@ -72,6 +72,21 @@ func EngToArray(word string) []string {
 
 	return strings.Split(sanitized, "|")
 }
+func SingleCharEngToAmh(letter string) (string, error) {
+	var result string
+	for _, val := range *utils.ReturnLetters() {
+		for _, val2 := range val {
+			// var words = make([]string, 3)
+			words := strings.Split(strings.TrimLeft(val2, " "), " ")
+			if words[1] == letter {
+				result = words[0]
+				return result, nil
+			}
+		}
+	}
+
+	return "", fmt.Errorf("%v - not found (no translation for %v)", letter, letter)
+}
 
 func ToEng(word string) (string, error) {
 	var engWord string
@@ -93,56 +108,25 @@ func ToEng(word string) (string, error) {
 
 func SingleCharAmhToEng(letter string) (string, error) {
 	var result string
-	found := false
+
 	for _, val := range *utils.ReturnLetters() {
 		for _, val2 := range val {
 			words := strings.Split(strings.TrimLeft(val2, " "), " ")
+			if words[0] == "" {
+				continue
+			}
 			if words[0] == letter {
-				found = true
 				result = words[1]
+				return result, nil
 			}
 		}
 	}
 
-	// if result != "" {
-	if found {
-		return result, nil
-	} else {
-		return "", fmt.Errorf("%v is not found (%v is not an amharic letter)", letter, letter)
-	}
-}
-
-func SingleCharEngToAmh(letter string) (string, error) {
-	var result string
-	for _, val := range *utils.ReturnLetters() {
-		for _, val2 := range val {
-			// var words = make([]string, 3)
-			words := strings.Split(strings.TrimLeft(val2, " "), " ")
-			if strings.ContainsAny(words[1], "/") {
-				duoTrans := strings.Split(words[1], "/")
-				words = append(words, duoTrans...)
-				// words[1], words[2] = duoTrans[0], duoTrans[1]
-
-				if words[1] == letter || words[2] == letter {
-					result = words[0]
-				}
-			} else {
-				if words[1] == letter {
-					result = words[0]
-				}
-			}
-		}
-	}
-
-	if result != "" {
-		return result, nil
-	} else {
-		return "", fmt.Errorf("%v - not found (no translation for %v)", letter, letter)
-	}
+	return "", fmt.Errorf("%v is not found (%v is not an amharic letter)", letter, letter)
 }
 
 func removeVowels(word string) string {
-	vowels := []string{"a", "u", "i", "ā", "é", "e", "o"}
+	vowels := []string{"a", "u", "i", "ā", "é", "e", "o", "&"}
 	tokens := strings.Split(word, "")
 
 	var arr = make([]string, len(tokens))
